@@ -1,165 +1,66 @@
-// // auth.js – ระบบล็อกอินด้วย Wallet (Sign Message + Session)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NovaVault - My Vault</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>NovaVault</h1>
+    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+      <button id="connectWalletBtn" data-i18n="connect_wallet">Connect Wallet</button>
+      <button id="disconnectWalletBtn" style="display: none;" data-i18n="disconnect_wallet">Disconnect Wallet</button>
+      <select id="networkSwitch">
+        <option value="">🌐 <span data-i18n="switch_network">Switch Network</span></option>
+        <option value="0x1">Ethereum</option>
+        <option value="0x89">Polygon</option>
+      </select>
+      <div id="walletChainId" style="color: #aaa;"></div>
+      <button id="loginWalletBtn" data-i18n="login">🔐 Login</button>
+      <button id="logoutWalletBtn" style="display: none;" data-i18n="logout">Logout</button>
+      <div id="loginStatus" style="color: #0f0;"></div>
+      <select id="langSwitch">
+        <option value="en">EN</option>
+        <option value="th">TH</option>
+      </select>
+    </div>
+  </header>
 
-let currentSession = null;
+  <div class="vault">
+    <div class="section" id="myTokens">
+      <h2 data-i18n="my_tokens">My Tokens</h2>
+      <div class="token">USDC: 1,320.54</div>
+      <div class="token">MATIC: 528.10</div>
+      <div class="token">ETH: 2.35</div>
+      <div style="margin-top: 1rem;">
+        <input id="tokenAddressInput" type="text" data-i18n-placeholder="enter_token_address" placeholder="Enter token address...">
+        <button onclick="addTokenByAddress()" data-i18n="add_token">+ Add Token</button>
+      </div>
+    </div>
 
-export async function loginWithWallet() {
-  if (!window.ethereum) {
-    toast("❌ MetaMask not found", "error");
-    return;
-  }
+    <div class="section">
+      <h2 data-i18n="my_nfts">My NFTs</h2>
+      <div class="nft">
+        <strong>Cyber Lion</strong><br/>
+        <img src="https://i.seadn.io/gcs/files/cba00062c45545815a4f0bdcf4fef14b.png?auto=format&dpr=1&w=384" alt="NFT 1" />
+      </div>
+      <div class="nft">
+        <strong>Crypto Galaxy</strong><br/>
+        <img src="https://i.seadn.io/gcs/files/71e317a58d4e1de7f2937558b17e038f.png?auto=format&dpr=1&w=384" alt="NFT 2" />
+      </div>
+    </div>
+  </div>
 
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
-  const address = await signer.getAddress();
+  <!-- SCRIPT ZONE -->
+  <script src="libs/web3.min.js"></script>
+  <script src="walletconnect.js"></script>
+  <script src="tokenlist.js"></script>
+  <script src="auth.js"></script>
+  <script src="language.js"></script>
+</body>
+</html>
 
-  const nonce = generateNonce();
-  const message = `Login to NovaVault\nNonce: ${nonce}`;
-
-  try {
-    const signature = await signer.signMessage(message);
-    currentSession = { address, nonce, signature };
-    localStorage.setItem("nv-session", JSON.stringify(currentSession));
-    toast(`🔓 Logged in: ${shorten(address)}`, "success");
-    updateLoginUI();
-  } catch (e) {
-    console.error("Sign failed", e);
-    toast("❌ Login cancelled", "error");
-  }
-}
-
-export function logoutWallet() {
-  localStorage.removeItem("nv-session");
-  currentSession = null;
-  toast("🔒 Logged out", "info");
-  updateLoginUI();
-}
-
-export function getCurrentSession() {
-  if (!currentSession) {
-    const sessionStr = localStorage.getItem("nv-session");
-    if (sessionStr) {
-      try {
-        currentSession = JSON.parse(sessionStr);
-      } catch (e) {}
-    }
-  }
-  return currentSession;
-}
-
-function generateNonce() {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
-}
-
-function shorten(addr) {
-  return addr.slice(0, 6) + "..." + addr.slice(-4);
-}
-
-function updateLoginUI() {
-  const loginBtn = document.getElementById("loginWalletBtn");
-  const logoutBtn = document.getElementById("logoutWalletBtn");
-  const loginStatus = document.getElementById("loginStatus");
-
-  const session = getCurrentSession();
-  if (session) {
-    loginBtn.style.display = "none";
-    logoutBtn.style.display = "inline-block";
-    loginStatus.innerText = `🔐 ${shorten(session.address)}`;
-  } else {
-    loginBtn.style.display = "inline-block";
-    logoutBtn.style.display = "none";
-    loginStatus.innerText = "";
-  }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  const loginBtn = document.getElementById("loginWalletBtn");
-  const logoutBtn = document.getElementById("logoutWalletBtn");
-
-  if (loginBtn) loginBtn.addEventListener("click", loginWithWallet);
-  if (logoutBtn) logoutBtn.addEventListener("click", logoutWallet);
-
-  updateLoginUI();
-});
- – ระบบล็อกอินด้วย Wallet (Sign Message + Session)
-
-let currentSession = null;
-
-export async function loginWithWallet() {
-  if (!window.ethereum) {
-    toast("❌ MetaMask not found", "error");
-    return;
-  }
-
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
-  const address = await signer.getAddress();
-
-  const nonce = generateNonce();
-  const message = `Login to NovaVault\nNonce: ${nonce}`;
-
-  try {
-    const signature = await signer.signMessage(message);
-    currentSession = { address, nonce, signature };
-    localStorage.setItem("nv-session", JSON.stringify(currentSession));
-    toast(`🔓 Logged in: ${shorten(address)}`, "success");
-    updateLoginUI();
-  } catch (e) {
-    console.error("Sign failed", e);
-    toast("❌ Login cancelled", "error");
-  }
-}
-
-export function logoutWallet() {
-  localStorage.removeItem("nv-session");
-  currentSession = null;
-  toast("🔒 Logged out", "info");
-  updateLoginUI();
-}
-
-export function getCurrentSession() {
-  if (!currentSession) {
-    const sessionStr = localStorage.getItem("nv-session");
-    if (sessionStr) {
-      try {
-        currentSession = JSON.parse(sessionStr);
-      } catch (e) {}
-    }
-  }
-  return currentSession;
-}
-
-function generateNonce() {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
-}
-
-function shorten(addr) {
-  return addr.slice(0, 6) + "..." + addr.slice(-4);
-}
-
-function updateLoginUI() {
-  const loginBtn = document.getElementById("loginWalletBtn");
-  const logoutBtn = document.getElementById("logoutWalletBtn");
-  const loginStatus = document.getElementById("loginStatus");
-
-  const session = getCurrentSession();
-  if (session) {
-    loginBtn.style.display = "none";
-    logoutBtn.style.display = "inline-block";
-    loginStatus.innerText = `🔐 ${shorten(session.address)}`;
-  } else {
-    loginBtn.style.display = "inline-block";
-    logoutBtn.style.display = "none";
-    loginStatus.innerText = "";
-  }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  const loginBtn = document.getElementById("loginWalletBtn");
-  const logoutBtn = document.getElementById("logoutWalletBtn");
-
-  if (loginBtn) loginBtn.addEventListener("click", loginWithWallet);
-  if (logoutBtn) logoutBtn.addEventListener("click", logoutWallet);
-
-  updateLoginUI();
-});
 
