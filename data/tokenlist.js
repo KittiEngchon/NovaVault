@@ -1,10 +1,8 @@
 // tokenlist.js – เพิ่ม Token แบบ Dynamic โดย Address พร้อมอัปเดต Dashboard
 
-import { updateDashboardSummary } from './dashboard.js';
-
 const tokenList = []; // เก็บรายการ token ที่ import
 
-export async function addTokenByAddress(address, provider) {
+window.addTokenByAddress = async function (address, provider) {
   if (!provider) {
     toast("❌ Wallet not connected.", "error");
     return;
@@ -34,13 +32,13 @@ export async function addTokenByAddress(address, provider) {
     const token = { address, name, symbol, decimals, balance };
     tokenList.push(token);
     renderImportedTokens();
-    updateDashboardSummary(tokenList, []); // อัปเดต dashboard
+    if (window.updateDashboardSummary) window.updateDashboardSummary(tokenList, []);
     toast(`✅ Imported ${symbol}: ${balance}`, "success");
   } catch (err) {
     console.error("Failed to import token:", err);
     toast("❌ Invalid token address", "error");
   }
-}
+};
 
 function renderImportedTokens() {
   const section = document.querySelector(".section#myTokens");
@@ -57,12 +55,11 @@ function renderImportedTokens() {
   }
 }
 
-window.addTokenByAddress = async function () {
+window.addTokenByInput = async function () {
   const input = document.getElementById("tokenAddressInput");
   if (!input || !input.value) return;
-
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const address = input.value.trim();
-  await addTokenByAddress(address, provider);
+  await window.addTokenByAddress(address, provider);
   input.value = "";
 };
