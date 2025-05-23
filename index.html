@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NovaVault - My Vault</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: white;
+    }
+    header {
+      padding: 1rem 2rem;
+      background: #1a1a1a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #00fff7;
+    }
+    .vault {
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .section {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+    }
+    .section h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+      color: #00fff7;
+    }
+    .token, .nft {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+    }
+    .nft img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>NovaVault</h1>
+    <button style="padding: 0.5rem 1rem; background: #00fff7; border: none; border-radius: 8px; color: #000; cursor: pointer;">
+      Connect Wallet
+    </button>
+  </header>
+
+  <div class="vault">
+    <div class="section">
+      <h2>My Tokens</h2>
+      <div class="token">USDC: 1,320.54</div>
+      <div class="token">MATIC: 528.10</div>
+      <div class="token">ETH: 2.35</div>
+    </div>
+
+    <div class="section">
+      <h2>My NFTs</h2>
+      <div class="nft">
+        <strong>Cyber Lion</strong><br/>
+        <img src="https://i.seadn.io/gcs/files/cba00062c45545815a4f0bdcf4fef14b.png?auto=format&dpr=1&w=384" alt="NFT 1" />
+      </div>
+      <div class="nft">
+        <strong>Crypto Galaxy</strong><br/>
+        <img src="https://i.seadn.io/gcs/files/71e317a58d4e1de7f2937558b17e038f.png?auto=format&dpr=1&w=384" alt="NFT 2" />
+      </div>
+    </div>
+  </div>
+</body>
+</html>
