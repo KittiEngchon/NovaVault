@@ -1,19 +1,35 @@
-// walletconnect.js
+// walletconnect.js (เวอร์ชันรวม MetaMask + WalletConnect Toggle)
+
 let walletConnector = null;
+let isWalletConnect = false;
+
+async function connectWallet() {
+  if (window.ethereum) {
+    try {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const address = accounts[0];
+      updateWalletUI(address);
+      isWalletConnect = false;
+      localStorage.setItem('nv-wallet-type', 'metamask');
+    } catch (error) {
+      console.error('MetaMask connection error:', error);
+    }
+  } else {
+    alert('MetaMask not found. Try WalletConnect instead.');
+  }
+}
 
 async function connectWithWalletConnect() {
-  if (typeof WalletConnect === "undefined" || typeof QRCodeModal === "undefined") {
+  if (typeof WalletConnect === "undefined") {
     alert("❌ WalletConnect library not loaded.");
     return;
   }
 
-  // สร้างตัวเชื่อม
   walletConnector = new WalletConnect.default({
     bridge: "https://bridge.walletconnect.org",
-    qrcodeModal: QRCodeModal.default
+    qrcodeModal: window.WalletConnectQRCodeModal.default
   });
 
-  // ถ้ายังไม่ได้เชื่อม
   if (!walletConnector.connected) {
     await walletConnector.createSession();
   } else {
@@ -21,73 +37,57 @@ async function connectWithWalletConnect() {
     onWalletConnected(accounts, chainId);
   }
 
-  // เมื่อเชื่อมต่อสำเร็จ
   walletConnector.on("connect", (error, payload) => {
-    if (error) {
-      console.error("WalletConnect Error:", error);
-      return;
-    }
+    if (error) throw error;
     const { accounts, chainId } = payload.params[0];
     onWalletConnected(accounts, chainId);
   });
 
-  // เมื่อผู้ใช้เปลี่ยนบัญชีหรือเครือข่าย
-  walletConnector.on("session_update", (error, payload) => {
-    if (error) return console.error("Session update error:", error);
-    const { accounts, chainId } = payload.params[0];
-    onWalletConnected(accounts, chainId);
-  });
-
-  // เมื่อยกเลิกการเชื่อมต่อ
-  walletConnector.on("disconnect", (error) => {
-    if (error) console.error("Disconnect error:", error);
-    console.log("🔌 Disconnected from WalletConnect");
+  walletConnector.on("disconnect", () => {
+    console.log("🔌 Disconnected WalletConnect");
     disconnectWallet();
   });
 }
 
 function onWalletConnected(accounts, chainId) {
   const address = accounts[0];
-  console.log("🔗 Connected:", address, "on Chain ID:", chainId);
-  localStorage.setItem("walletconnect_address", address);
-  localStorage.setItem("walletconnect_chain", chainId);
+  isWalletConnect = true;
+  localStorage.setItem("nv-wallet-type", "walletconnect");
   updateWalletUI(address);
+  console.log("🔗 Connected:", address, "Chain:", chainId);
 }
 
 function disconnectWallet() {
-  localStorage.removeItem("walletconnect_address");
-  localStorage.removeItem("walletconnect_chain");
   updateWalletUI(null);
+  localStorage.removeItem("nv-wallet-type");
 }
 
 function updateWalletUI(address) {
-  const button = document.querySelector(".connect-wallet");
-  if (button) {
-    button.innerText = address ? shortenAddress(address) : "Connect Wallet";
-    button.style.background = address ? "#00ffcc" : "#00fff7";
+  const btn = document.getElementById("connectWalletBtn");
+  if (btn) {
+    btn.innerText = address ? shortenAddress(address) : "Connect Wallet";
+    btn.style.background = address ? "#00ffcc" : "#00fff7";
   }
 }
 
 function shortenAddress(addr) {
-  return addr.slice(0, 6) + "..." + addr.slice(-4);
+  return addr.slice(0, 6) + '...' + addr.slice(-4);
 }
 
-// ติดตั้งเมื่อ DOM โหลดแล้ว
 document.addEventListener("DOMContentLoaded", () => {
-  let connectBtn = document.querySelector(".connect-wallet");
-  if (!connectBtn) {
-    connectBtn = document.createElement("button");
-    connectBtn.className = "connect-wallet";
-    connectBtn.innerText = "Connect Wallet";
-    connectBtn.style.cssText = "position:fixed;bottom:1rem;right:1rem;padding:0.75rem 1rem;background:#00fff7;border:none;border-radius:8px;color:#000;z-index:9999;";
-    document.body.appendChild(connectBtn);
-  }
+  const btn = document.getElementById("connectWalletBtn");
+  if (!btn) return;
 
-  connectBtn.addEventListener("click", () => {
-    connectWithWalletConnect();
+  btn.addEventListener("click", () => {
+    const useWalletConnect = confirm("Use WalletConnect? Press 'Cancel' to use MetaMask.");
+    if (useWalletConnect) {
+      connectWithWalletConnect();
+    } else {
+      connectWallet();
+    }
   });
 
-  // โหลด address จาก localStorage ถ้ามี
-  const saved = localStorage.getItem("walletconnect_address");
-  if (saved) updateWalletUI(saved);
+  // Restore previous session
+  const type = localStorage.getItem("nv-wallet-type");
+  if (type === "walletconnect") connectWithWalletConnect();
 });
