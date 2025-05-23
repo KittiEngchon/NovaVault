@@ -1,0 +1,46 @@
+[
+  {
+    "chainId": 137,
+    "name": "Polygon",
+    "nativeCurrency": {
+      "name": "MATIC",
+      "symbol": "MATIC",
+      "decimals": 18
+    },
+    "rpcUrls": ["https://polygon-rpc.com"],
+    "blockExplorerUrls": ["https://polygonscan.com"]
+  },
+  {
+    "chainId": 1,
+    "name": "Ethereum",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    },
+    "rpcUrls": ["https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID"],
+    "blockExplorerUrls": ["https://etherscan.io"]
+  },
+  {
+    "chainId": 56,
+    "name": "Binance Smart Chain",
+    "nativeCurrency": {
+      "name": "Binance Coin",
+      "symbol": "BNB",
+      "decimals": 18
+    },
+    "rpcUrls": ["https://bsc-dataseed.binance.org"],
+    "blockExplorerUrls": ["https://bscscan.com"]
+  },
+  {
+    "chainId": 42161,
+    "name": "Arbitrum One",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    },
+    "rpcUrls": ["https://arb1.arbitrum.io/rpc"],
+    "blockExplorerUrls": ["https://arbiscan.io"]
+  }
+]
