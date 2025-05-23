@@ -1,3 +1,5 @@
+/* styles.css */
+
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -19,7 +21,7 @@ header h1 {
   color: #00fff7;
 }
 
-button.connect-wallet {
+#wallet-btn {
   padding: 0.5rem 1rem;
   background: #00fff7;
   border: none;
@@ -29,8 +31,8 @@ button.connect-wallet {
   transition: background 0.3s ease;
 }
 
-button.connect-wallet:hover {
-  background: #00c4cc;
+#wallet-btn:hover {
+  background: #00e6d2;
 }
 
 .vault {
@@ -38,6 +40,12 @@ button.connect-wallet:hover {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .vault {
+    grid-template-columns: 1fr;
+  }
 }
 
 .section {
@@ -58,6 +66,11 @@ button.connect-wallet:hover {
   padding: 0.75rem;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.token:hover, .nft:hover {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .nft img {
@@ -65,3 +78,4 @@ button.connect-wallet:hover {
   border-radius: 8px;
   margin-top: 0.5rem;
 }
+
