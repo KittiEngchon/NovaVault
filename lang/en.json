@@ -1,0 +1,16 @@
+{
+  "connect_wallet": "Connect Wallet",
+  "disconnect_wallet": "Disconnect Wallet",
+  "switch_network": "Switch Network",
+  "login": "Login",
+  "logout": "Logout",
+  "my_tokens": "My Tokens",
+  "my_nfts": "My NFTs",
+  "add_token": "+ Add Token",
+  "enter_token_address": "Enter token address...",
+  "language": "Language",
+  "logged_in": "Logged in",
+  "logged_out": "Logged out",
+  "network": "Network",
+  "balance": "Balance"
+}
