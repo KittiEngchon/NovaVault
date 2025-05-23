@@ -25,11 +25,15 @@
   </header>
 
   <div class="vault">
-    <div class="section">
+    <div class="section" id="myTokens">
       <h2>My Tokens</h2>
       <div class="token">USDC: 1,320.54</div>
       <div class="token">MATIC: 528.10</div>
       <div class="token">ETH: 2.35</div>
+      <div style="margin-top: 1rem;">
+        <input id="tokenAddressInput" type="text" placeholder="Enter token address..." style="padding: 0.5rem; border-radius: 6px; width: 60%; max-width: 300px;">
+        <button onclick="addTokenByAddress()" style="padding: 0.5rem 1rem; margin-left: 0.5rem; background: #00fff7; color: black; border: none; border-radius: 6px; cursor: pointer;">+ Add Token</button>
+      </div>
     </div>
 
     <div class="section">
@@ -48,5 +52,7 @@
   <!-- SCRIPT ZONE -->
   <script src="libs/web3.min.js"></script>
   <script src="walletconnect.js"></script>
+  <script src="tokenlist.js"></script>
 </body>
 </html>
+
