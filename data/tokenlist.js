@@ -1,4 +1,6 @@
-// tokenlist.js – เพิ่ม Token แบบ Dynamic โดย Address
+// tokenlist.js – เพิ่ม Token แบบ Dynamic โดย Address พร้อมอัปเดต Dashboard
+
+import { updateDashboardSummary } from './dashboard.js';
 
 const tokenList = []; // เก็บรายการ token ที่ import
 
@@ -32,6 +34,7 @@ export async function addTokenByAddress(address, provider) {
     const token = { address, name, symbol, decimals, balance };
     tokenList.push(token);
     renderImportedTokens();
+    updateDashboardSummary(tokenList, []); // อัปเดต dashboard
     toast(`✅ Imported ${symbol}: ${balance}`, "success");
   } catch (err) {
     console.error("Failed to import token:", err);
