@@ -1,0 +1,16 @@
+{
+  "connect_wallet": "เชื่อมต่อวอลเล็ต",
+  "disconnect_wallet": "ยกเลิกการเชื่อมต่อ",
+  "switch_network": "เปลี่ยนเครือข่าย",
+  "login": "เข้าสู่ระบบ",
+  "logout": "ออกจากระบบ",
+  "my_tokens": "โทเคนของฉัน",
+  "my_nfts": "NFT ของฉัน",
+  "add_token": "+ เพิ่มโทเคน",
+  "enter_token_address": "กรอกที่อยู่โทเคน...",
+  "language": "ภาษา",
+  "logged_in": "เข้าสู่ระบบแล้ว",
+  "logged_out": "ออกจากระบบแล้ว",
+  "network": "เครือข่าย",
+  "balance": "ยอดคงเหลือ"
+}
