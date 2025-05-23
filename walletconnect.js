@@ -1,12 +1,12 @@
-// walletconnect.js – MetaMask + Chain ID + Balance + Toast Types + Network Name
+// walletconnect.js – MetaMask + Switch Network + Chain ID + Balance + Toast
 
 let connectedAddress = null;
 
 const NETWORKS = {
-  1: 'Ethereum',
-  137: 'Polygon',
-  56: 'BSC',
-  42161: 'Arbitrum'
+  1: { name: 'Ethereum', chainId: '0x1' },
+  137: { name: 'Polygon', chainId: '0x89' },
+  56: { name: 'BSC', chainId: '0x38' },
+  42161: { name: 'Arbitrum', chainId: '0xa4b1' }
 };
 
 function updateWalletUI(address, chainId) {
@@ -20,7 +20,7 @@ function updateWalletUI(address, chainId) {
   }
 
   if (chain) {
-    const name = NETWORKS[chainId] || `Chain ID: ${chainId}`;
+    const name = NETWORKS[chainId]?.name || `Chain ID: ${chainId}`;
     chain.textContent = address && chainId ? `🛰 ${name}` : "";
   }
 
@@ -77,14 +77,40 @@ function toast(msg, type = 'info') {
   setTimeout(() => div.remove(), 3500);
 }
 
+async function switchNetwork(targetChainIdHex) {
+  if (!window.ethereum) return;
+  try {
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: targetChainIdHex }]
+    });
+    toast(`🔄 Switched to ${NETWORKS[parseInt(targetChainIdHex, 16)]?.name}`, 'success');
+    connectWithMetaMask();
+  } catch (error) {
+    if (error.code === 4902) {
+      toast('❌ Network not available in MetaMask', 'error');
+    } else {
+      console.error(error);
+      toast('❌ Failed to switch network', 'error');
+    }
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const connectBtn = document.getElementById("connectWalletBtn");
   const disconnectBtn = document.getElementById("disconnectWalletBtn");
+  const switchDropdown = document.getElementById("networkSwitch");
 
   if (connectBtn) connectBtn.addEventListener("click", connectWithMetaMask);
   if (disconnectBtn) disconnectBtn.addEventListener("click", () => {
     if (confirm("Disconnect wallet?")) disconnectWallet();
   });
+  if (switchDropdown) {
+    switchDropdown.addEventListener("change", (e) => {
+      const chainHex = e.target.value;
+      if (chainHex) switchNetwork(chainHex);
+    });
+  }
 
   const type = localStorage.getItem("nv-wallet-type");
   if (type === "metamask") connectWithMetaMask();
