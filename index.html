@@ -23,6 +23,15 @@
       font-size: 1.5rem;
       color: #00fff7;
     }
+    #connectWalletBtn {
+      padding: 0.5rem 1rem;
+      background: #00fff7;
+      border: none;
+      border-radius: 8px;
+      color: #000;
+      cursor: pointer;
+      font-weight: bold;
+    }
     .vault {
       padding: 2rem;
       display: grid;
@@ -56,9 +65,7 @@
 <body>
   <header>
     <h1>NovaVault</h1>
-    <button style="padding: 0.5rem 1rem; background: #00fff7; border: none; border-radius: 8px; color: #000; cursor: pointer;">
-      Connect Wallet
-    </button>
+    <button id="connectWalletBtn">Connect Wallet</button>
   </header>
 
   <div class="vault">
@@ -81,5 +88,11 @@
       </div>
     </div>
   </div>
+
+  <!-- SCRIPT LOADING ZONE -->
+  <script src="libs/web3.min.js"></script>
+  <script src="https://unpkg.com/@walletconnect/client@1.7.6/dist/umd/index.min.js"></script>
+  <script src="walletconnect.js"></script>
 </body>
 </html>
+
