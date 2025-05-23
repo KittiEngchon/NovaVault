@@ -6,6 +6,7 @@
   <title>NovaVault - My Vault</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
@@ -35,6 +36,7 @@
       <div id="totalBalance">💰 Total: -</div>
       <div id="tokenCount">📦 Tokens: -</div>
       <div id="nftCount">🎨 NFTs: -</div>
+      <canvas id="tokenChart" width="300" height="300" style="margin-top: 1rem;"></canvas>
     </div>
 
     <div class="section" id="myTokens">
@@ -70,5 +72,3 @@
   <script src="dashboard.js"></script>
 </body>
 </html>
-
-
