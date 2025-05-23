@@ -21,14 +21,23 @@ header h1 {
   color: #00fff7;
 }
 
-#connectWalletBtn {
+#connectWalletBtn, #disconnectWalletBtn {
   padding: 0.5rem 1rem;
-  background: #00fff7;
   border: none;
   border-radius: 8px;
-  color: #000;
-  cursor: pointer;
   font-weight: bold;
+  cursor: pointer;
+}
+
+#connectWalletBtn {
+  background: #00fff7;
+  color: #000;
+}
+
+#disconnectWalletBtn {
+  background: #444;
+  color: #fff;
+  display: none;
 }
 
 .vault {
@@ -121,4 +130,28 @@ header h1 {
 .wallet-option.cancel:hover {
   background: #666;
 }
+
+/* Toast Notification */
+.toast {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+  z-index: 9999;
+  animation: fadeinout 3.5s ease-in-out;
+}
+
+@keyframes fadeinout {
+  0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+}
+
 
