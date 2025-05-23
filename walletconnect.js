@@ -1,4 +1,4 @@
-// walletconnect.js – MetaMask + Chain ID + Balance + Toasts + Network Name
+// walletconnect.js – MetaMask + Chain ID + Balance + Toast Types + Network Name
 
 let connectedAddress = null;
 
@@ -44,10 +44,10 @@ async function connectWithMetaMask() {
       const address = accounts[0];
       localStorage.setItem('nv-wallet-type', 'metamask');
       updateWalletUI(address, parseInt(chainId, 16));
-      toast(`🦊 Connected: ${shortenAddress(address)}`);
+      toast(`🦊 Connected: ${shortenAddress(address)}`, 'success');
     } catch (error) {
       console.error('MetaMask connection error:', error);
-      toast('❌ Connection failed');
+      toast('❌ Connection failed', 'error');
     }
   } else {
     alert('MetaMask is not installed. Please install it from https://metamask.io');
@@ -58,7 +58,7 @@ function disconnectWallet() {
   localStorage.removeItem("nv-wallet-type");
   updateWalletUI(null, null);
   connectedAddress = null;
-  toast("🔌 Disconnected");
+  toast("🔌 Disconnected", 'info');
 }
 
 async function fetchBalance(address) {
@@ -66,12 +66,12 @@ async function fetchBalance(address) {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const balance = await provider.getBalance(address);
   const eth = ethers.utils.formatEther(balance);
-  toast(`💰 Balance: ${parseFloat(eth).toFixed(4)} ETH`);
+  toast(`💰 Balance: ${parseFloat(eth).toFixed(4)} ETH`, 'info');
 }
 
-function toast(msg) {
+function toast(msg, type = 'info') {
   let div = document.createElement("div");
-  div.className = "toast";
+  div.className = `toast ${type}`;
   div.innerText = msg;
   document.body.appendChild(div);
   setTimeout(() => div.remove(), 3500);
@@ -89,4 +89,5 @@ document.addEventListener("DOMContentLoaded", () => {
   const type = localStorage.getItem("nv-wallet-type");
   if (type === "metamask") connectWithMetaMask();
 });
+
 
