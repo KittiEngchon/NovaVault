@@ -1,11 +1,24 @@
-// walletconnect.js (เฉพาะ MetaMask เท่านั้น - ไม่มี WalletConnect)
+// walletconnect.js (MetaMask Only + Chain ID + Disconnect)
 
-function updateWalletUI(address) {
+let connectedAddress = null;
+
+function updateWalletUI(address, chainId) {
   const btn = document.getElementById("connectWalletBtn");
+  const chain = document.getElementById("walletChainId");
+  const disconnectBtn = document.getElementById("disconnectWalletBtn");
+
   if (btn) {
     btn.innerText = address ? shortenAddress(address) : "Connect Wallet";
     btn.style.background = address ? "#00ffcc" : "#00fff7";
   }
+  if (chain) {
+    chain.textContent = address && chainId ? `Chain ID: ${chainId}` : "";
+  }
+  if (disconnectBtn) {
+    disconnectBtn.style.display = address ? "inline-block" : "none";
+  }
+
+  connectedAddress = address;
 }
 
 function shortenAddress(addr) {
@@ -16,9 +29,10 @@ async function connectWithMetaMask() {
   if (window.ethereum && window.ethereum.isMetaMask) {
     try {
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const chainId = await window.ethereum.request({ method: 'eth_chainId' });
       const address = accounts[0];
       localStorage.setItem('nv-wallet-type', 'metamask');
-      updateWalletUI(address);
+      updateWalletUI(address, parseInt(chainId, 16));
       console.log("🦊 Connected to MetaMask:", address);
     } catch (error) {
       console.error('MetaMask connection error:', error);
@@ -28,14 +42,22 @@ async function connectWithMetaMask() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("connectWalletBtn");
-  if (!btn) return;
+function disconnectWallet() {
+  localStorage.removeItem("nv-wallet-type");
+  updateWalletUI(null, null);
+  connectedAddress = null;
+  console.log("🔌 Disconnected MetaMask");
+}
 
-  btn.addEventListener("click", connectWithMetaMask);
+document.addEventListener("DOMContentLoaded", () => {
+  const connectBtn = document.getElementById("connectWalletBtn");
+  const disconnectBtn = document.getElementById("disconnectWalletBtn");
+
+  if (connectBtn) connectBtn.addEventListener("click", connectWithMetaMask);
+  if (disconnectBtn) disconnectBtn.addEventListener("click", () => {
+    if (confirm("Disconnect wallet?")) disconnectWallet();
+  });
 
   const type = localStorage.getItem("nv-wallet-type");
   if (type === "metamask") connectWithMetaMask();
 });
-
-
