@@ -4,63 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NovaVault - My Vault</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: white;
-    }
-    header {
-      padding: 1rem 2rem;
-      background: #1a1a1a;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      color: #00fff7;
-    }
-    #connectWalletBtn {
-      padding: 0.5rem 1rem;
-      background: #00fff7;
-      border: none;
-      border-radius: 8px;
-      color: #000;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .vault {
-      padding: 2rem;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-    }
-    .section {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
-    }
-    .section h2 {
-      margin-top: 0;
-      font-size: 1.25rem;
-      color: #00fff7;
-    }
-    .token, .nft {
-      margin-top: 1rem;
-      padding: 0.75rem;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-    }
-    .nft img {
-      max-width: 100%;
-      border-radius: 8px;
-      margin-top: 0.5rem;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header>
@@ -89,10 +33,19 @@
     </div>
   </div>
 
-  <!-- SCRIPT LOADING ZONE -->
+  <!-- Wallet Selection Modal -->
+  <div id="walletModal" class="modal">
+    <div class="modal-content">
+      <h3>Select Wallet</h3>
+      <div class="wallet-option" onclick="connectWithMetaMask()">🦊 MetaMask</div>
+      <div class="wallet-option" onclick="connectWithWalletConnect()">🔗 WalletConnect</div>
+      <div class="wallet-option cancel" onclick="closeWalletModal()">❌ Cancel</div>
+    </div>
+  </div>
+
+  <!-- SCRIPT ZONE -->
   <script src="libs/web3.min.js"></script>
   <script src="https://unpkg.com/@walletconnect/client@1.7.6/dist/umd/index.min.js"></script>
   <script src="walletconnect.js"></script>
 </body>
 </html>
-
