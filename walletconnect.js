@@ -1,26 +1,49 @@
-// walletconnect.js (เวอร์ชันรวม MetaMask + WalletConnect Toggle)
+// walletconnect.js – รวม MetaMask + WalletConnect แบบ Modal มืออาชีพ
 
 let walletConnector = null;
 let isWalletConnect = false;
 
-async function connectWallet() {
+function updateWalletUI(address) {
+  const btn = document.getElementById("connectWalletBtn");
+  if (btn) {
+    btn.innerText = address ? shortenAddress(address) : "Connect Wallet";
+    btn.style.background = address ? "#00ffcc" : "#00fff7";
+  }
+  closeWalletModal();
+}
+
+function shortenAddress(addr) {
+  return addr.slice(0, 6) + '...' + addr.slice(-4);
+}
+
+function openWalletModal() {
+  const modal = document.getElementById("walletModal");
+  if (modal) modal.style.display = "flex";
+}
+
+function closeWalletModal() {
+  const modal = document.getElementById("walletModal");
+  if (modal) modal.style.display = "none";
+}
+
+async function connectWithMetaMask() {
   if (window.ethereum) {
     try {
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       const address = accounts[0];
-      updateWalletUI(address);
       isWalletConnect = false;
       localStorage.setItem('nv-wallet-type', 'metamask');
+      updateWalletUI(address);
     } catch (error) {
       console.error('MetaMask connection error:', error);
     }
   } else {
-    alert('MetaMask not found. Try WalletConnect instead.');
+    alert('MetaMask not found. Please install MetaMask extension.');
   }
 }
 
 async function connectWithWalletConnect() {
-  if (typeof WalletConnect === "undefined") {
+  if (typeof WalletConnect === "undefined" || typeof window.WalletConnectQRCodeModal === "undefined") {
     alert("❌ WalletConnect library not loaded.");
     return;
   }
@@ -32,9 +55,6 @@ async function connectWithWalletConnect() {
 
   if (!walletConnector.connected) {
     await walletConnector.createSession();
-  } else {
-    const { accounts, chainId } = walletConnector;
-    onWalletConnected(accounts, chainId);
   }
 
   walletConnector.on("connect", (error, payload) => {
@@ -62,32 +82,13 @@ function disconnectWallet() {
   localStorage.removeItem("nv-wallet-type");
 }
 
-function updateWalletUI(address) {
-  const btn = document.getElementById("connectWalletBtn");
-  if (btn) {
-    btn.innerText = address ? shortenAddress(address) : "Connect Wallet";
-    btn.style.background = address ? "#00ffcc" : "#00fff7";
-  }
-}
-
-function shortenAddress(addr) {
-  return addr.slice(0, 6) + '...' + addr.slice(-4);
-}
-
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("connectWalletBtn");
   if (!btn) return;
 
-  btn.addEventListener("click", () => {
-    const useWalletConnect = confirm("Use WalletConnect? Press 'Cancel' to use MetaMask.");
-    if (useWalletConnect) {
-      connectWithWalletConnect();
-    } else {
-      connectWallet();
-    }
-  });
+  btn.addEventListener("click", openWalletModal);
 
-  // Restore previous session
   const type = localStorage.getItem("nv-wallet-type");
   if (type === "walletconnect") connectWithWalletConnect();
 });
+
