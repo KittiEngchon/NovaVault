@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Cyber Lion",
+    "contract": "0xabc123...789",
+    "token_id": "101",
+    "image": "https://i.seadn.io/gcs/files/cba00062c45545815a4f0bdcf4fef14b.png?auto=format&dpr=1&w=384",
+    "description": "A fierce lion roaming the cyber savannah.",
+    "chain": "polygon"
+  },
+  {
+    "name": "Crypto Galaxy",
+    "contract": "0xdef456...000",
+    "token_id": "202",
+    "image": "https://i.seadn.io/gcs/files/71e317a58d4e1de7f2937558b17e038f.png?auto=format&dpr=1&w=384",
+    "description": "A galaxy of stars forged from crypto dreams.",
+    "chain": "ethereum"
+  },
+  {
+    "name": "Nova Dragon",
+    "contract": "0xa1b2c3d4e5f67890abcd1234ef567890abcdef12",
+    "token_id": "888",
+    "image": "/assets/nft/nova-dragon.png",
+    "description": "The legendary dragon of NovaVault.",
+    "chain": "polygon"
+  }
+]
