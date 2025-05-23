@@ -1,96 +1,65 @@
-<script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
-<script>
-  let provider;
-  let signer;
-  let userAddress;
+// novavault.js
 
-  const connectWallet = async () => {
-    if (window.ethereum) {
-      try {
-        provider = new ethers.providers.Web3Provider(window.ethereum);
-        await provider.send("eth_requestAccounts", []);
-        signer = provider.getSigner();
-        userAddress = await signer.getAddress();
-        document.querySelector("button").textContent = userAddress.slice(0, 6) + '...' + userAddress.slice(-4);
-        loadTokenBalances();
-        loadNFTs();
-      } catch (err) {
-        alert("Wallet connection failed.");
-        console.error(err);
-      }
-    } else {
-      alert("Please install MetaMask!");
-    }
-  };
+// Connect Wallet and fetch balances
+let userAddress = "";
 
-  const loadTokenBalances = async () => {
-    const tokenList = [
-      {
-        symbol: "USDC",
-        address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174", // USDC on Polygon
-        decimals: 6
-      },
-      {
-        symbol: "MATIC",
-        address: "native", // Native token
-        decimals: 18
-      },
-      {
-        symbol: "ETH",
-        address: "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619", // WETH on Polygon
-        decimals: 18
-      }
-    ];
-
-    const erc20ABI = [
-      "function balanceOf(address owner) view returns (uint256)",
-      "function decimals() view returns (uint8)"
-    ];
-
-    const container = document.querySelector(".section:first-child");
-    container.innerHTML = "<h2>My Tokens</h2>";
-
-    for (const token of tokenList) {
-      let balance;
-      if (token.address === "native") {
-        balance = await provider.getBalance(userAddress);
-      } else {
-        const contract = new ethers.Contract(token.address, erc20ABI, provider);
-        balance = await contract.balanceOf(userAddress);
-      }
-
-      const formatted = ethers.utils.formatUnits(balance, token.decimals);
-      const div = document.createElement("div");
-      div.className = "token";
-      div.textContent = `${token.symbol}: ${parseFloat(formatted).toFixed(4)}`;
-      container.appendChild(div);
-    }
-  };
-
-  const loadNFTs = async () => {
-    const apiKey = "demo"; // Replace with your Alchemy or Moralis key if needed
-    const url = `https://polygon-mainnet.g.alchemy.com/nft/v2/${apiKey}/getNFTs?owner=${userAddress}`;
-
+async function connectWallet() {
+  if (window.ethereum) {
     try {
-      const res = await fetch(url);
-      const data = await res.json();
-
-      const nftContainer = document.querySelector(".section:last-child");
-      nftContainer.innerHTML = "<h2>My NFTs</h2>";
-
-      data.ownedNfts?.slice(0, 5).forEach(nft => {
-        const div = document.createElement("div");
-        div.className = "nft";
-        div.innerHTML = `
-          <strong>${nft.title || nft.metadata.name || "Unknown NFT"}</strong><br/>
-          <img src="${nft.media[0]?.gateway || ""}" alt="NFT"/>
-        `;
-        nftContainer.appendChild(div);
-      });
-    } catch (err) {
-      console.error("NFT load error:", err);
+      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+      userAddress = accounts[0];
+      document.getElementById("wallet-btn").innerText = shortenAddress(userAddress);
+      loadTokens();
+      loadNFTs();
+    } catch (error) {
+      console.error("User denied wallet connection", error);
     }
-  };
+  } else {
+    alert("MetaMask not found. Please install it to continue.");
+  }
+}
 
-  document.querySelector("button").addEventListener("click", connectWallet);
-</script>
+function shortenAddress(address) {
+  return address.slice(0, 6) + '...' + address.slice(-4);
+}
+
+function copyAddress() {
+  navigator.clipboard.writeText(userAddress);
+  alert("Wallet address copied to clipboard");
+}
+
+async function loadTokens() {
+  const tokenContainer = document.getElementById("token-list");
+  tokenContainer.innerHTML = "Loading tokens...";
+  
+  // Placeholder for token values, normally fetched via Web3 or API
+  const tokens = [
+    { name: 'USDC', balance: '1,320.54' },
+    { name: 'MATIC', balance: '528.10' },
+    { name: 'ETH', balance: '2.35' }
+  ];
+
+  tokenContainer.innerHTML = tokens.map(token => 
+    `<div class="token">${token.name}: ${token.balance}</div>`
+  ).join('');
+}
+
+async function loadNFTs() {
+  const nftContainer = document.getElementById("nft-list");
+  nftContainer.innerHTML = "Loading NFTs...";
+
+  // Placeholder for NFT metadata
+  const nfts = [
+    { name: 'Cyber Lion', image: 'https://i.seadn.io/gcs/files/cba00062c45545815a4f0bdcf4fef14b.png' },
+    { name: 'Crypto Galaxy', image: 'https://i.seadn.io/gcs/files/71e317a58d4e1de7f2937558b17e038f.png' }
+  ];
+
+  nftContainer.innerHTML = nfts.map(nft => `
+    <div class="nft">
+      <strong>${nft.name}</strong><br/>
+      <img src="${nft.image}" alt="${nft.name}" />
+    </div>
+  `).join('');
+}
+
+document.getElementById("wallet-btn").addEventListener("click", connectWallet);
